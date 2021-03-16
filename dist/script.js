@@ -952,7 +952,7 @@ window.addEventListener('DOMContentLoaded', function () {
 
 "use strict";
 __webpack_require__.r(__webpack_exports__);
-/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "default", function() { return VideoPlayes; });
+/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "default", function() { return VideoPlayer; });
 /* harmony import */ var core_js_modules_web_dom_collections_for_each__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! core-js/modules/web.dom-collections.for-each */ "./node_modules/core-js/modules/web.dom-collections.for-each.js");
 /* harmony import */ var core_js_modules_web_dom_collections_for_each__WEBPACK_IMPORTED_MODULE_0___default = /*#__PURE__*/__webpack_require__.n(core_js_modules_web_dom_collections_for_each__WEBPACK_IMPORTED_MODULE_0__);
 
@@ -963,18 +963,46 @@ function _defineProperties(target, props) { for (var i = 0; i < props.length; i+
 
 function _createClass(Constructor, protoProps, staticProps) { if (protoProps) _defineProperties(Constructor.prototype, protoProps); if (staticProps) _defineProperties(Constructor, staticProps); return Constructor; }
 
-var VideoPlayes =
+var VideoPlayer =
 /*#__PURE__*/
 function () {
-  function VideoPlayes(triggers, overlay) {
-    _classCallCheck(this, VideoPlayes);
+  function VideoPlayer(triggers, overlay) {
+    _classCallCheck(this, VideoPlayer);
 
+    this.btns = document.querySelectorAll(triggers);
     this.overlay = document.querySelector(overlay);
     this.close = this.overlay.querySelector('.close');
-    this.btns = document.querySelectorAll(triggers);
   }
 
-  _createClass(VideoPlayes, [{
+  _createClass(VideoPlayer, [{
+    key: "bindTriggers",
+    value: function bindTriggers() {
+      var _this = this;
+
+      this.btns.forEach(function (btn) {
+        btn.addEventListener('click', function () {
+          if (document.querySelector('iframe#frame')) {
+            _this.overlay.style.display = 'flex';
+          } else {
+            var path = btn.getAttribute('data-url');
+
+            _this.createPlayer(path);
+          }
+        });
+      });
+    }
+  }, {
+    key: "bindCloseBtn",
+    value: function bindCloseBtn() {
+      var _this2 = this;
+
+      this.close.addEventListener('click', function () {
+        _this2.overlay.style.display = 'none';
+
+        _this2.player.stopVideo();
+      });
+    }
+  }, {
     key: "createPlayer",
     value: function createPlayer(url) {
       this.player = new YT.Player('frame', {
@@ -982,28 +1010,22 @@ function () {
         width: '100%',
         videoId: "".concat(url)
       });
+      console.log(this.player);
       this.overlay.style.display = 'flex';
     }
   }, {
     key: "init",
     value: function init() {
-      var _this = this;
-
       var tag = document.createElement('script');
       tag.src = "https://www.youtube.com/iframe_api";
       var firstScriptTag = document.getElementsByTagName('script')[0];
       firstScriptTag.parentNode.insertBefore(tag, firstScriptTag);
-      this.btns.forEach(function (btn) {
-        btn.addEventListener('click', function () {
-          var path = btn.getAttribute('data-url');
-
-          _this.createPlayer(path);
-        });
-      });
+      this.bindTriggers();
+      this.bindCloseBtn();
     }
   }]);
 
-  return VideoPlayes;
+  return VideoPlayer;
 }();
 
 
